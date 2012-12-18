@@ -226,9 +226,10 @@
 					var input = $("<input/>")
 						.val(comparator.ArgumentDefaults[0])
 						.attr("type","text")
-						.appendTo(conditions).change(function(){ setValueOfInput(clause, $(this).val().replace(/([^a-z0-9\ä\ö\ü\ß])+/i, '')); });
+						.appendTo(conditions)
+						.change(function(){ setValueOfInput(clause, $(this).val().replace(/([^a-z0-9\ä\ö\ü\ß]\-)+/i, '')); });
 					if(fieldtype === "Date"){
-						input.datepicker();
+						input.datepicker({"dateFormat" : 'yy-mm-dd'});
 					}
 					break;
 				case 2:
