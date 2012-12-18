@@ -114,17 +114,21 @@
 					.attr("data-fieldtype", fields[i].FieldType)
 					.val(fields[i].FieldName)
 					.text(fields[i].FieldTitle)
-						.appendTo(fields_dropdown);
+					.appendTo(fields_dropdown);
 			}
 			fields_dropdown.change(function(){
 				methods.adjustField($(this).parent(), $(this).find('option:selected').attr('data-fieldtype'));
 			});
 			fields_dropdown.appendTo(template);
+			
 			var comparators_dropdown = $("<select/>", { class: "comparators"})
 			comparators_dropdown.change(function(){
-					methods.adjustComparator($(this).parent(), $(this).val());
-				})
-				comparators_dropdown.appendTo(template);
+				console.log('change call');
+				methods.adjustComparator($(this).parent(), $(this).val());
+			});
+			comparators_dropdown.appendTo(template);
+			
+			
 			$("<span/>", { class: "conditions"})
 				.appendTo(template);
 			$("<button class='rm'/>")
@@ -132,7 +136,6 @@
 				.click(function(){
 					
 					// SET ARRAY
-					
 					if($(this).parent().index() != -1){
 						existing_clauses.splice($(this).parent().index(),1);
 					}
@@ -219,6 +222,8 @@
 				}
 			}
 			
+			console.log('comparator', comparator.ArgumentCount);
+			
 			switch(comparator.ArgumentCount)
 			{
 				case 1:
@@ -227,28 +232,91 @@
 						.val(comparator.ArgumentDefaults[0])
 						.attr("type","text")
 						.appendTo(conditions)
-						.change(function(){ setValueOfInput(clause, $(this).val().replace(/([^a-z0-9\ä\ö\ü\ß]\-)+/i, '')); });
+						.focusout(function(){ setValueOfInput(clause, $(this).parent().find('input').val().replace(/([^a-z0-9\ä\ö\ü\ß]\-)+/i, '')); });
 					if(fieldtype === "Date"){
 						input.datepicker({"dateFormat" : 'yy-mm-dd'});
+					}
+					if(fieldtype === "Number"){
+						input.keydown(function(event) {
+							// Allow: backspace, delete, tab, escape, and enter
+							if ( event.keyCode == 46 || event.keyCode == 8 || event.keyCode == 9 || event.keyCode == 27 || event.keyCode == 13 || 
+								 // Allow: Ctrl+A
+								(event.keyCode == 65 && event.ctrlKey === true) || 
+								 // Allow: home, end, left, right
+								(event.keyCode >= 35 && event.keyCode <= 39)) {
+									 // let it happen, don't do anything
+									 return;
+							}
+							else {
+								// Ensure that it is a number and stop the keypress
+								if (event.shiftKey || (event.keyCode < 48 || event.keyCode > 57) && (event.keyCode < 96 || event.keyCode > 105 )) {
+									event.preventDefault(); 
+								}   
+							}
+						});
 					}
 					break;
 				case 2:
 					// add a textbox, then a span, then another textbox 
-					$("<input/>")
+					var input1 = $("<input/>")
 						.val(comparator.ArgumentDefaults[0])
 						.attr("type","text")
 						.appendTo(conditions).focusout(function(){ setValueOfInputs(clause, $(this).val(), $(this).parent().find('input').last().val()); });
 					$("<span/>")
-						.text("and")
+						.text("und")
 						.appendTo(conditions);
-					$("<input/>")
+					var input2 = $("<input/>")
 						.val(comparator.ArgumentDefaults[0])
 						.attr("type","text")
 						.appendTo(conditions).focusout(function(){ setValueOfInputs(clause, $(this).val(), $(this).parent().find('input').first().val()); });
+					
+					if(fieldtype === "Date"){
+						input1.datepicker({"dateFormat" : 'yy-mm-dd'});
+						input2.datepicker({"dateFormat" : 'yy-mm-dd'});
+					}
+					if(fieldtype === "Number"){
+						input1.keydown(function(event) {
+							// Allow: backspace, delete, tab, escape, and enter
+							if ( event.keyCode == 46 || event.keyCode == 8 || event.keyCode == 9 || event.keyCode == 27 || event.keyCode == 13 || 
+								 // Allow: Ctrl+A
+								(event.keyCode == 65 && event.ctrlKey === true) || 
+								 // Allow: home, end, left, right
+								(event.keyCode >= 35 && event.keyCode <= 39)) {
+									 // let it happen, don't do anything
+									 return;
+							}
+							else {
+								// Ensure that it is a number and stop the keypress
+								if (event.shiftKey || (event.keyCode < 48 || event.keyCode > 57) && (event.keyCode < 96 || event.keyCode > 105 )) {
+									event.preventDefault(); 
+								}   
+							}
+						});
+						input2.keydown(function(event) {
+							// Allow: backspace, delete, tab, escape, and enter
+							if ( event.keyCode == 46 || event.keyCode == 8 || event.keyCode == 9 || event.keyCode == 27 || event.keyCode == 13 || 
+								 // Allow: Ctrl+A
+								(event.keyCode == 65 && event.ctrlKey === true) || 
+								 // Allow: home, end, left, right
+								(event.keyCode >= 35 && event.keyCode <= 39)) {
+									 // let it happen, don't do anything
+									 return;
+							}
+							else {
+								// Ensure that it is a number and stop the keypress
+								if (event.shiftKey || (event.keyCode < 48 || event.keyCode > 57) && (event.keyCode < 96 || event.keyCode > 105 )) {
+									event.preventDefault(); 
+								}   
+							}
+						});
+					}
+					
+					
 					break;
 			}
 			
 			function setValueOfInput(clause, value){
+				console.log('changed');
 				// SET ARRAY
 				if(clause.index() != -1){
 					$.fn.queryBuilder.options.existing_clauses[clause.index()].Condition.Arguments[0] = value;
@@ -314,7 +382,10 @@
 						"Combiner" : "and"
 						
 					});
+					methods.adjustComparator(new_clause, "ist");
 			}
+			
+			
 			
 			new_clause.appendTo($.fn.queryBuilder.options.bindTo);
 		},
