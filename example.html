@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+	<meta http-equiv="Content-type" content="text/html; charset=utf-8"/>
+	<title>queryBuilder</title>
+	
+	<link rel="stylesheet" href="css/ui-lightness/jquery-ui-1.9.2.custom.min.css">
+	
+	<script src="js/jquery-1.8.3.js" type="text/javascript"></script>
+	<script src="js/jquery-ui-1.9.2.custom.min.js" type="text/javascript"></script>
+	
+	<script src="js/jquery.queryBuilder.js" type="text/javascript"></script>
+</head>
+<body>
+	<div id="filtertest">
+		<span id="description">Items with all of the conditions will be returned</span>
+		<div id="clauses">
+			<!-- clauses go here -->
+		</div>
+		<a id="add-clause" href="#">Add</a>
+		<a id="log-clause" href="#">log</a>
+		<a id="log-filter" href="#">getfilter</a>
+		<a id="change-data" href="#">changeData</a>
+		<p id="where"></p>
+		<p id="filter"></p>
+	</div>
+	
+	<script type="text/javascript" charset="utf-8">
+		var or_fields = [
+			{
+				"FieldName": "Title",
+				"FieldTitle": 'Titel',
+				"FieldType": "String"
+			},
+			{
+				"FieldName": "PublishDate",
+				"FieldTitle": 'Datum',
+				"FieldType": "Date"
+			},
+			{
+				"FieldName": "PageCount",
+				"FieldTitle": 'Seitenanzahl',
+				"FieldType": "Number"
+			}
+		];
+		
+		var new_fields = [
+			{
+				"FieldName": "Title1",
+				"FieldTitle": 'Titel1',
+				"FieldType": "String"
+			},
+			{
+				"FieldName": "PublishDate1",
+				"FieldTitle": 'Datum1',
+				"FieldType": "Date"
+			},
+			{
+				"FieldName": "PageCount1",
+				"FieldTitle": 'Seitenanzahl1',
+				"FieldType": "Number"
+			}
+		];
+		
+		var or_existing_clauses = [
+			{
+				"FieldName" : "Title",
+				"Condition" : {
+					"Comparator" : "ist",
+					"Arguments" : ['1984']
+				},
+				"Combiner" : "and"
+				
+			},
+			{
+				"FieldName" : "PageCount",
+				"Condition" : {
+					"Comparator" : "zwischen",
+					"Arguments" : ['100','200']
+				},
+				"Combiner" : "or"
+			}
+		] ;
+		
+		var new_existing_clauses = [
+			{
+				"FieldName" : "Title1",
+				"Condition" : {
+					"Comparator" : "ist",
+					"Arguments" : ['1984']
+				},
+				"Combiner" : "and"
+				
+			},
+			{
+				"FieldName" : "PageCount1",
+				"Condition" : {
+					"Comparator" : "zwischen",
+					"Arguments" : ['100','200']
+				},
+				"Combiner" : "or"
+			}
+		] ;
+		
+		$(document).ready(function() {
+			//setup(fields, existing_clauses);
+			$("#add-clause").click(function() {
+				$('#filtertest #clauses').queryBuilder('addClause');
+			});
+			$("#log-clause").click(function() {
+				var where = $('#filtertest #clauses').queryBuilder('getWhereClause');
+				$('#where').html(where);
+			});
+			$("#log-filter").click(function() {
+				var filter = $('#filtertest #clauses').queryBuilder('getFilterAsObject',{string: true});
+				$('#filter').html(filter);
+			});		
+			$('#change-data').click(function(){
+				$('#filtertest #clauses').queryBuilder('changeData',{newFields : new_fields , newClauses: new_existing_clauses});
+			});
+			
+	
+			
+			$('#filtertest #clauses').queryBuilder({
+				fields: or_fields, 
+				existing_clauses: or_existing_clauses
+			});
+		
+		});
+	</script>
+	
+</body>
+</html>
