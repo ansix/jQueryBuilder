@@ -123,7 +123,6 @@
 			
 			var comparators_dropdown = $("<select/>", { class: "comparators"})
 			comparators_dropdown.change(function(){
-				console.log('change call');
 				methods.adjustComparator($(this).parent(), $(this).val());
 			});
 			comparators_dropdown.appendTo(template);
@@ -222,7 +221,7 @@
 				}
 			}
 			
-			console.log('comparator', comparator.ArgumentCount);
+
 			
 			switch(comparator.ArgumentCount)
 			{
@@ -316,7 +315,6 @@
 			}
 			
 			function setValueOfInput(clause, value){
-				console.log('changed');
 				// SET ARRAY
 				if(clause.index() != -1){
 					$.fn.queryBuilder.options.existing_clauses[clause.index()].Condition.Arguments[0] = value;
@@ -426,14 +424,12 @@
 		},
 		getFilterAsObject: function(asString){
 			if(asString){
-				console.log($.fn.queryBuilder.options.existing_clauses)
 				return obj2json($.fn.queryBuilder.options.existing_clauses);
 			}
 			else
 				return $.fn.queryBuilder.options.existing_clauses;
 		},
 		changeData: function(data){
-			console.log(data);
 		
 			$('.rm').trigger('click');
 		
