@@ -63,6 +63,7 @@ If you use {sting: true} the clauses will be parsed as String. If not you get th
 
 ##TODO
 - testing
+- internationalization
 - ...
 
 
