@@ -146,16 +146,17 @@
 			// LIFE
 			var combiner_dropdown = $("<select/>", { class: "combiner"});
 			combiner_dropdown.change(function(){
-				adjustCombiner($(this).parent(), $(this).val());
-				});
-				$("<option/>")
-					.text('and')
-					.appendTo(combiner_dropdown);
-				$("<option/>")
-					.text('or')
-					.appendTo(combiner_dropdown);
+				methods.adjustCombiner($(this).parent(), $(this).val());
+			});
+			$("<option/>")
+				.text('and')
+				.appendTo(combiner_dropdown);
+			$("<option/>")
+				.text('or')
+				.appendTo(combiner_dropdown);
 			
 			combiner_dropdown.appendTo(template);
+			
 			// LIFE
 		
 			methods.adjustField(template, fields[0].FieldType);
@@ -171,6 +172,11 @@
 			for(var i in existing_clauses)
 			{
 				methods.addClause(existing_clauses[i]);
+			}
+		},
+		adjustCombiner: function(clause, value){
+			if(clause.index() != -1){
+				$.fn.queryBuilder.options.existing_clauses[clause.index()].Combiner = value;
 			}
 		},
 		// change the condition UI to fit the selected field
